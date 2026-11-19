@@ -1,0 +1,49 @@
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background: #101010;
+}
+
+body {
+    margin: 0;
+    background: #101010;
+    color: #eeeeee;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+::selection {
+    background: #eeeeee;
+    color: #101010;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #101010;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #444444;
+}
