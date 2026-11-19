@@ -58,3 +58,12 @@ export interface MovieDetailsResponse {
   status: string;
   data: Movie;
 }
+
+export interface MovieQueryParams {
+  page?: number;
+  rating_kp?: number;
+  year?: number;
+  order?: string;
+
+  [key: string]: string | number | boolean | undefined;
+}

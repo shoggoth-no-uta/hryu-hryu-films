@@ -1,5 +1,5 @@
 import { apiRequest } from '../../../api/client';
-import type { MovieSearchResponse } from '../../../types/movie';
+import type { MovieQueryParams, MovieSearchResponse } from '../../../types/movie';
 
 // Поиск фильмов по названию.
 export function searchMovies(
@@ -18,11 +18,14 @@ export function searchMovies(
 }
 
 // Получение списка фильмов.
-export function getMovies(page = 1, signal?: AbortSignal) {
+export function getMovies(
+  params: MovieQueryParams = {},
+  signal?: AbortSignal,
+) {
   return apiRequest<MovieSearchResponse>(
     {
       list: '',
-      page: page > 1 ? page : undefined,
+      ...params,
     },
     signal,
   );

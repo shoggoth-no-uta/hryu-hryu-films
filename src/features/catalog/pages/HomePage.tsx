@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, AlertCircle, X } from 'lucide-react';
@@ -22,10 +23,10 @@ export function HomePage() {
 
     const searchFromUrl = searchParams.get('q') ?? '';
     const page = parsePage(searchParams.get('page'));
+
     const [search, setSearch] = useState(searchFromUrl);
     const debouncedSearch = useDebounce(search.trim(), 400);
 
-    // Restore the input when the user navigates Back/Forward in browser history.
     useEffect(() => {
         setSearch(searchFromUrl);
     }, [searchFromUrl]);
@@ -36,12 +37,11 @@ export function HomePage() {
             const normalized = value.trim();
 
             if (normalized) {
-                next.set('q', value);
+                next.set('q', normalized);
             } else {
                 next.delete('q');
             }
 
-            // A different query always starts from the first result page.
             next.delete('page');
             return next;
         }, { replace: true });
@@ -61,13 +61,16 @@ export function HomePage() {
     const handlePageChange = (nextPage: number) => {
         setSearchParams((current) => {
             const next = new URLSearchParams(current);
+
             if (nextPage > 1) {
                 next.set('page', String(nextPage));
             } else {
                 next.delete('page');
             }
+
             return next;
         });
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -77,10 +80,18 @@ export function HomePage() {
         isError,
         error,
         isFetching,
-    } = useMovies(page, debouncedSearch);
+    } = useMovies(
+        {
+            page,
+            rating_kp: 8,
+            order: 'year'
+        },
+        debouncedSearch,
+    );
 
     const handleMovieClick = (movie: Movie) => {
         saveMovie(movie);
+
         navigate(`/movie/${encodeURIComponent(movie.token_movie)}`, {
             state: {
                 movie,
@@ -106,6 +117,7 @@ export function HomePage() {
                                 Каталог
                             </h1>
                         </div>
+
                         <span className="text-xs tabular-nums text-zinc-500">
                             Страница {page}
                         </span>
@@ -114,6 +126,7 @@ export function HomePage() {
                     <div className="mt-5">
                         <div className="mb-2 flex items-center justify-between text-xs text-zinc-500">
                             <label htmlFor="movie-search">Поиск по названию</label>
+
                             {search && (
                                 <button
                                     type="button"
@@ -145,7 +158,10 @@ export function HomePage() {
                         <p className="text-xs text-zinc-500">Загрузка…</p>
                     </div>
                 ) : isError ? (
-                    <div className="flex min-h-64 flex-col items-center justify-center border border-zinc-800/80 bg-zinc-950/50 px-4 text-center" role="alert">
+                    <div
+                        className="flex min-h-64 flex-col items-center justify-center border border-zinc-800/80 bg-zinc-950/50 px-4 text-center"
+                        role="alert"
+                    >
                         <AlertCircle size={20} className="mb-3 text-zinc-500" />
                         <p className="text-xs font-medium text-zinc-200">
                             Не удалось загрузить каталог
@@ -186,7 +202,10 @@ export function HomePage() {
                             </div>
                         )}
 
-                        <MovieGrid movies={movies} onMovieClick={handleMovieClick} />
+                        <MovieGrid
+                            movies={movies}
+                            onMovieClick={handleMovieClick}
+                        />
 
                         <footer className="mt-10 border-t border-zinc-800/80 pt-6">
                             <Pagination
